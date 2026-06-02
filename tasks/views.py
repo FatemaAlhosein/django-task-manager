@@ -3,15 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
 from django.utils import timezone
-from .models import Task
-from .forms import TaskForm, RegisterForm
+from .models import Task, Category
+from .forms import TaskForm, RegisterForm, CategoryForm
 
 
 def register(request):
-    """Register a new user."""
     if request.user.is_authenticated:
         return redirect('task-list')
-
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -21,21 +19,19 @@ def register(request):
             return redirect('task-list')
     else:
         form = RegisterForm()
-
     return render(request, 'tasks/register.html', {'form': form})
 
 
 @login_required
 def task_list(request):
-    """Dashboard: task list with search, filter, and stats."""
     today = timezone.now().date()
 
-    # --- filtering ---
     status   = request.GET.get('status', 'all')
     priority = request.GET.get('priority', 'all')
+    category = request.GET.get('category', 'all')
     query    = request.GET.get('q', '').strip()
 
-    tasks = Task.objects.filter(user=request.user)
+    tasks = Task.objects.filter(user=request.user).select_related('category')
 
     if status == 'active':
         tasks = tasks.filter(completed=False)
@@ -43,21 +39,34 @@ def task_list(request):
         tasks = tasks.filter(completed=True)
     elif status == 'overdue':
         tasks = tasks.filter(completed=False, due_date__lt=today)
+    elif status == 'today':
+        tasks = tasks.filter(completed=False, due_date=today)
 
     if priority != 'all':
         tasks = tasks.filter(priority=priority)
 
+    if category == 'none':
+        tasks = tasks.filter(category__isnull=True)
+    elif category != 'all':
+        tasks = tasks.filter(category__id=category)
+
     if query:
         tasks = tasks.filter(title__icontains=query)
 
-    # --- stats (always from full set) ---
+    # Stats from full set
     all_tasks = Task.objects.filter(user=request.user)
     total     = all_tasks.count()
     completed = all_tasks.filter(completed=True).count()
     pending   = all_tasks.filter(completed=False).count()
     overdue   = all_tasks.filter(completed=False, due_date__lt=today).count()
+    due_today = all_tasks.filter(completed=False, due_date=today).count()
 
-    # annotate each task with overdue flag
+    # Priority counts for sidebar
+    high_count   = all_tasks.filter(completed=False, priority='high').count()
+    medium_count = all_tasks.filter(completed=False, priority='medium').count()
+    low_count    = all_tasks.filter(completed=False, priority='low').count()
+
+    # Annotate overdue flag
     for task in tasks:
         task.is_overdue = (
             not task.completed and
@@ -65,15 +74,23 @@ def task_list(request):
             task.due_date < today
         )
 
+    categories = Category.objects.filter(user=request.user)
+
     context = {
         'tasks': tasks,
         'status': status,
         'priority': priority,
+        'category': category,
         'query': query,
         'total': total,
         'completed': completed,
         'pending': pending,
         'overdue': overdue,
+        'due_today': due_today,
+        'high_count': high_count,
+        'medium_count': medium_count,
+        'low_count': low_count,
+        'categories': categories,
         'today': today,
     }
     return render(request, 'tasks/task_list.html', context)
@@ -82,7 +99,7 @@ def task_list(request):
 @login_required
 def task_create(request):
     if request.method == 'POST':
-        form = TaskForm(request.POST)
+        form = TaskForm(request.user, request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
@@ -90,7 +107,7 @@ def task_create(request):
             messages.success(request, 'Task created!')
             return redirect('task-list')
     else:
-        form = TaskForm()
+        form = TaskForm(request.user)
     return render(request, 'tasks/task_form.html', {'form': form, 'action': 'Create'})
 
 
@@ -98,13 +115,13 @@ def task_create(request):
 def task_edit(request, pk):
     task = get_object_or_404(Task, pk=pk, user=request.user)
     if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.user, request.POST, instance=task)
         if form.is_valid():
             form.save()
             messages.success(request, 'Task updated!')
             return redirect('task-list')
     else:
-        form = TaskForm(instance=task)
+        form = TaskForm(request.user, instance=task)
     return render(request, 'tasks/task_form.html', {'form': form, 'action': 'Edit', 'task': task})
 
 
@@ -123,8 +140,40 @@ def task_toggle(request, pk):
     task = get_object_or_404(Task, pk=pk, user=request.user)
     task.completed = not task.completed
     task.save()
-    # Auto-create next occurrence when a recurring task is completed
     if task.completed and task.recurrence != 'none':
         task.create_next_occurrence()
         messages.success(request, f'✓ Done! Next "{task.title}" scheduled automatically.')
     return redirect('task-list')
+
+
+# ── Category views ────────────────────────────────────────────────────────────
+
+@login_required
+def category_list(request):
+    categories = Category.objects.filter(user=request.user).annotate(
+        task_count=models.Count('tasks')
+    )
+    form = CategoryForm()
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            cat = form.save(commit=False)
+            cat.user = request.user
+            cat.save()
+            messages.success(request, f'Category "{cat.name}" created!')
+            return redirect('category-list')
+    return render(request, 'tasks/category_list.html', {'categories': categories, 'form': form})
+
+
+@login_required
+def category_delete(request, pk):
+    cat = get_object_or_404(Category, pk=pk, user=request.user)
+    if request.method == 'POST':
+        cat.delete()
+        messages.success(request, 'Category deleted.')
+        return redirect('category-list')
+    return render(request, 'tasks/category_confirm_delete.html', {'category': cat})
+
+
+# need models.Count
+from django.db import models

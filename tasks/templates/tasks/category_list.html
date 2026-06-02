@@ -1,0 +1,70 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h4 mb-0">Categories</h1>
+      <a href="{% url 'task-list' %}" class="btn btn-sm btn-outline-secondary">← Back</a>
+    </div>
+
+    <!-- Existing categories -->
+    {% if categories %}
+      <div class="card shadow-sm mb-4">
+        <ul class="list-group list-group-flush">
+          {% for cat in categories %}
+            <li class="list-group-item d-flex align-items-center gap-3">
+              <span style="width:14px;height:14px;border-radius:50%;background:{{ cat.color }};flex-shrink:0;display:inline-block;"></span>
+              <span class="flex-grow-1 fw-500">{{ cat.name }}</span>
+              <span class="text-muted small">{{ cat.tasks.count }} task{{ cat.tasks.count|pluralize }}</span>
+              <form method="post" action="{% url 'category-delete' cat.pk %}" class="mb-0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Delete {{ cat.name }}?')">Delete</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <!-- Add new category -->
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="h6 mb-3">Add New Category</h2>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            {{ form.name }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Color</label>
+            <div class="d-flex gap-2 flex-wrap mt-1">
+              {% for value, label in form.color.field.choices %}
+                <label class="color-option">
+                  <input type="radio" name="color" value="{{ value }}" {% if form.color.value == value %}checked{% endif %} />
+                  <span style="background:{{ value }};" title="{{ label }}"></span>
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-dark">Add Category</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  input[type=text] { display:block; width:100%; padding:.5rem .75rem; border:1px solid #dee2e6; border-radius:.375rem; font-size:.95rem; }
+  input[type=text]:focus { outline:none; border-color:#212529; box-shadow:0 0 0 3px rgba(33,37,41,.1); }
+  .color-option input[type=radio] { display:none; }
+  .color-option span { display:inline-block; width:26px; height:26px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition:border-color .15s; }
+  .color-option input[type=radio]:checked + span { border-color: #212529; }
+  .color-option span:hover { border-color: #aaa; }
+</style>
+{% endblock %}

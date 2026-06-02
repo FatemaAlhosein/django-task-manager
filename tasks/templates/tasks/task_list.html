@@ -3,41 +3,40 @@
 
 {% block content %}
 
-<!-- ── STATS CARDS ─────────────────────────────────────────────────────── -->
+<!-- ── STATS CARDS ─────────────────────────────────────────────────── -->
 <div class="row g-3 mb-4">
   <div class="col-6 col-md-3">
-    <div class="stat-card">
+    <a href="?status=all" class="stat-card {% if status == 'all' %}stat-card--active{% endif %}">
       <div class="stat-number">{{ total }}</div>
       <div class="stat-label">Total</div>
-    </div>
+    </a>
   </div>
   <div class="col-6 col-md-3">
-    <div class="stat-card stat-card--success">
+    <a href="?status=completed" class="stat-card stat-card--success {% if status == 'completed' %}stat-card--active{% endif %}">
       <div class="stat-number">{{ completed }}</div>
       <div class="stat-label">Completed</div>
-    </div>
+    </a>
   </div>
   <div class="col-6 col-md-3">
-    <div class="stat-card stat-card--warning">
-      <div class="stat-number">{{ pending }}</div>
-      <div class="stat-label">Pending</div>
-    </div>
+    <a href="?status=today" class="stat-card stat-card--info {% if status == 'today' %}stat-card--active{% endif %}">
+      <div class="stat-number">{{ due_today }}</div>
+      <div class="stat-label">Due Today</div>
+    </a>
   </div>
   <div class="col-6 col-md-3">
-    <div class="stat-card {% if overdue %}stat-card--danger{% endif %}">
+    <a href="?status=overdue" class="stat-card {% if overdue %}stat-card--danger{% endif %} {% if status == 'overdue' %}stat-card--active{% endif %}">
       <div class="stat-number">{{ overdue }}</div>
       <div class="stat-label">Overdue</div>
-    </div>
+    </a>
   </div>
 </div>
 
-<!-- ── MAIN GRID ───────────────────────────────────────────────────────── -->
+<!-- ── MAIN GRID ───────────────────────────────────────────────────── -->
 <div class="row g-4">
 
-  <!-- Task list column -->
+  <!-- Task list -->
   <div class="col-lg-8">
 
-    <!-- Header row -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h1 class="h5 mb-0 fw-semibold">My Tasks</h1>
       <a href="{% url 'task-create' %}" class="btn btn-dark btn-sm px-3">+ New Task</a>
@@ -46,37 +45,23 @@
     <!-- Search + filters -->
     <form method="get" class="mb-3">
       <div class="input-group input-group-sm mb-2">
-        <input type="text" name="q" value="{{ query }}" class="form-control"
-               placeholder="Search tasks…" />
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search tasks…" />
         <button class="btn btn-outline-secondary" type="submit">Search</button>
-        {% if query %}
-          <a href="?" class="btn btn-outline-danger">✕</a>
-        {% endif %}
+        {% if query %}<a href="?" class="btn btn-outline-danger">✕</a>{% endif %}
       </div>
       <div class="d-flex gap-2 flex-wrap">
-        <!-- Status filter -->
-        <div class="btn-group btn-group-sm" role="group">
-          <a href="?status=all&priority={{ priority }}"
-             class="btn {% if status == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">All</a>
-          <a href="?status=active&priority={{ priority }}"
-             class="btn {% if status == 'active' %}btn-dark{% else %}btn-outline-secondary{% endif %}">Active</a>
-          <a href="?status=completed&priority={{ priority }}"
-             class="btn {% if status == 'completed' %}btn-dark{% else %}btn-outline-secondary{% endif %}">Done</a>
-          <a href="?status=overdue&priority={{ priority }}"
-             class="btn {% if status == 'overdue' %}btn-danger{% else %}btn-outline-danger{% endif %}">
-            Overdue{% if overdue %} ({{ overdue }}){% endif %}
-          </a>
+        <div class="btn-group btn-group-sm">
+          <a href="?status=all&priority={{ priority }}&category={{ category }}"    class="btn {% if status == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">All</a>
+          <a href="?status=active&priority={{ priority }}&category={{ category }}" class="btn {% if status == 'active' %}btn-dark{% else %}btn-outline-secondary{% endif %}">Active</a>
+          <a href="?status=today&priority={{ priority }}&category={{ category }}"  class="btn {% if status == 'today' %}btn-primary{% else %}btn-outline-primary{% endif %}">Today</a>
+          <a href="?status=completed&priority={{ priority }}&category={{ category }}" class="btn {% if status == 'completed' %}btn-success{% else %}btn-outline-success{% endif %}">Done</a>
+          <a href="?status=overdue&priority={{ priority }}&category={{ category }}" class="btn {% if status == 'overdue' %}btn-danger{% else %}btn-outline-danger{% endif %}">Overdue{% if overdue %} ({{ overdue }}){% endif %}</a>
         </div>
-        <!-- Priority filter -->
-        <div class="btn-group btn-group-sm" role="group">
-          <a href="?status={{ status }}&priority=all"
-             class="btn {% if priority == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">Any</a>
-          <a href="?status={{ status }}&priority=high"
-             class="btn {% if priority == 'high' %}btn-danger{% else %}btn-outline-danger{% endif %}">High</a>
-          <a href="?status={{ status }}&priority=medium"
-             class="btn {% if priority == 'medium' %}btn-warning{% else %}btn-outline-warning{% endif %}">Med</a>
-          <a href="?status={{ status }}&priority=low"
-             class="btn {% if priority == 'low' %}btn-success{% else %}btn-outline-success{% endif %}">Low</a>
+        <div class="btn-group btn-group-sm">
+          <a href="?status={{ status }}&priority=all&category={{ category }}"    class="btn {% if priority == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">Any</a>
+          <a href="?status={{ status }}&priority=high&category={{ category }}"   class="btn {% if priority == 'high' %}btn-danger{% else %}btn-outline-danger{% endif %}">High</a>
+          <a href="?status={{ status }}&priority=medium&category={{ category }}" class="btn {% if priority == 'medium' %}btn-warning{% else %}btn-outline-warning{% endif %}">Med</a>
+          <a href="?status={{ status }}&priority=low&category={{ category }}"    class="btn {% if priority == 'low' %}btn-success{% else %}btn-outline-success{% endif %}">Low</a>
         </div>
       </div>
     </form>
@@ -100,9 +85,12 @@
                 <span class="task-title {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
                   {{ task.title }}
                 </span>
-                <span class="priority-badge priority-badge--{{ task.priority }}">
-                  {{ task.get_priority_display }}
-                </span>
+                <span class="priority-badge priority-badge--{{ task.priority }}">{{ task.get_priority_display }}</span>
+                {% if task.category %}
+                  <span class="cat-badge" style="background:{{ task.category.color }}20; color:{{ task.category.color }}; border:1px solid {{ task.category.color }}40;">
+                    {{ task.category.name }}
+                  </span>
+                {% endif %}
                 {% if task.is_overdue %}
                   <span class="badge bg-danger">Overdue</span>
                 {% endif %}
@@ -115,7 +103,7 @@
               {% endif %}
               {% if task.due_date %}
                 <p class="task-due {% if task.is_overdue %}text-danger{% else %}text-muted{% endif %}">
-                  📅 Due {{ task.due_date }}
+                  📅 {{ task.due_date }}
                 </p>
               {% endif %}
             </div>
@@ -133,149 +121,166 @@
       </div>
     {% endif %}
 
-  </div><!-- /col -->
+  </div>
 
-  <!-- Sidebar column -->
+  <!-- Sidebar -->
   <div class="col-lg-4">
 
     <!-- Donut chart -->
     {% if total %}
-    <div class="sidebar-card mb-4">
+    <div class="sidebar-card mb-3">
       <p class="sidebar-card__title">Progress</p>
       <canvas id="progressChart" height="180"></canvas>
-      <p class="text-center text-muted small mt-2">
-        {{ completed }} of {{ total }} tasks completed
-      </p>
+      <p class="text-center text-muted small mt-2">{{ completed }} of {{ total }} completed</p>
     </div>
     {% endif %}
 
-    <!-- Priority breakdown -->
-    <div class="sidebar-card">
-      <p class="sidebar-card__title">By Priority</p>
-      {% with high=tasks|length %}
-        <div class="priority-bar-row">
-          <span class="priority-bar-label text-danger">High</span>
-          <div class="priority-bar-track">
-            <div class="priority-bar-fill bg-danger"
-                 data-count="{{ request.user.tasks.all|length }}"></div>
+    <!-- Priority breakdown (fixed) -->
+    <div class="sidebar-card mb-3">
+      <p class="sidebar-card__title">Pending by Priority</p>
+      {% if high_count or medium_count or low_count %}
+        {% if high_count %}
+        <div class="mb-2">
+          <div class="d-flex justify-content-between small mb-1">
+            <span><span class="dot dot--high me-1"></span>High</span>
+            <strong>{{ high_count }}</strong>
+          </div>
+          <div class="progress" style="height:5px;">
+            <div class="progress-bar bg-danger" style="width:{% widthratio high_count pending 100 %}%"></div>
           </div>
         </div>
-      {% endwith %}
-      <div class="d-flex flex-column gap-2 mt-2">
-        <div class="d-flex justify-content-between align-items-center">
-          <span class="badge bg-danger px-2">High</span>
-          <span class="text-muted small">{{ request.user.tasks.filter }}</span>
+        {% endif %}
+        {% if medium_count %}
+        <div class="mb-2">
+          <div class="d-flex justify-content-between small mb-1">
+            <span><span class="dot dot--medium me-1"></span>Medium</span>
+            <strong>{{ medium_count }}</strong>
+          </div>
+          <div class="progress" style="height:5px;">
+            <div class="progress-bar bg-warning" style="width:{% widthratio medium_count pending 100 %}%"></div>
+          </div>
         </div>
-      </div>
-      <ul class="priority-summary list-unstyled mt-1">
-        <li>
-          <span class="priority-dot bg-danger"></span>
-          High —
-          <strong>{{ total }}</strong> total
-        </li>
-      </ul>
-      <!-- Simple counts -->
-      <div class="priority-counts">
-        <div class="priority-count-item">
-          <span class="dot dot--high"></span>
-          <span class="text-muted small">High</span>
-          <span class="ms-auto fw-semibold">{{ request.user.tasks.all|length }}</span>
+        {% endif %}
+        {% if low_count %}
+        <div class="mb-1">
+          <div class="d-flex justify-content-between small mb-1">
+            <span><span class="dot dot--low me-1"></span>Low</span>
+            <strong>{{ low_count }}</strong>
+          </div>
+          <div class="progress" style="height:5px;">
+            <div class="progress-bar bg-success" style="width:{% widthratio low_count pending 100 %}%"></div>
+          </div>
         </div>
-      </div>
+        {% endif %}
+      {% else %}
+        <p class="text-muted small mb-0">No pending tasks.</p>
+      {% endif %}
     </div>
 
-  </div><!-- /col -->
+    <!-- Categories -->
+    <div class="sidebar-card">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <p class="sidebar-card__title mb-0">Categories</p>
+        <a href="{% url 'category-list' %}" class="small text-muted">Manage →</a>
+      </div>
+      {% if categories %}
+        <div class="d-flex flex-column gap-1">
+          <a href="?status={{ status }}&priority={{ priority }}&category=all"
+             class="cat-filter-link {% if category == 'all' %}cat-filter-link--active{% endif %}">
+            <span class="cat-dot" style="background:#6c757d"></span> All tasks
+          </a>
+          {% for cat in categories %}
+            <a href="?status={{ status }}&priority={{ priority }}&category={{ cat.id }}"
+               class="cat-filter-link {% if category == cat.id|stringformat:'s' %}cat-filter-link--active{% endif %}">
+              <span class="cat-dot" style="background:{{ cat.color }}"></span>
+              {{ cat.name }}
+              <span class="ms-auto text-muted small">{{ cat.tasks.count }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted small mb-1">No categories yet.</p>
+        <a href="{% url 'category-list' %}" class="btn btn-sm btn-outline-secondary w-100">+ Add category</a>
+      {% endif %}
+    </div>
 
-</div><!-- /row -->
+  </div>
+</div>
 
-<!-- ── STYLES ──────────────────────────────────────────────────────────── -->
+<!-- ── STYLES ──────────────────────────────────────────────────────── -->
 <style>
-  /* Stat cards */
   .stat-card {
-    background: #fff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1.25rem 1rem;
-    text-align: center;
-    transition: transform 0.15s;
+    display: block; text-decoration: none; color: inherit;
+    background: #fff; border: 1px solid #e9ecef; border-radius: 8px;
+    padding: 1.25rem 1rem; text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.07); color: inherit; }
+  .stat-card--active { border-color: #212529; box-shadow: 0 0 0 2px #21212920; }
   .stat-card--success { border-top: 3px solid #198754; }
-  .stat-card--warning { border-top: 3px solid #ffc107; }
+  .stat-card--info    { border-top: 3px solid #0dcaf0; }
   .stat-card--danger  { border-top: 3px solid #dc3545; }
   .stat-number { font-size: 2rem; font-weight: 700; line-height: 1; }
   .stat-label  { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
 
-  /* Task cards */
-  .task-list { display: flex; flex-direction: column; gap: 0.6rem; }
-
+  .task-list { display: flex; flex-direction: column; gap: 0.5rem; }
   .task-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    background: #fff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.9rem 1rem;
-    transition: box-shadow 0.15s;
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    background: #fff; border: 1px solid #e9ecef; border-radius: 8px;
+    padding: 0.85rem 1rem; transition: box-shadow 0.15s;
   }
   .task-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
-  .task-card--done  { background: #f8f9fa; opacity: 0.75; }
+  .task-card--done    { background: #f8f9fa; opacity: 0.7; }
   .task-card--overdue { border-left: 3px solid #dc3545; }
-
-  .task-card__left { flex-shrink: 0; padding-top: 2px; }
-  .task-card__body { flex: 1; min-width: 0; }
-  .task-card__actions { display: flex; gap: 0.4rem; flex-shrink: 0; align-items: flex-start; }
+  .task-card__left    { flex-shrink: 0; padding-top: 2px; }
+  .task-card__body    { flex: 1; min-width: 0; }
+  .task-card__actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
 
   .toggle-btn { text-decoration: none; font-size: 1.2rem; }
   .toggle-btn--done { color: #198754; }
   .toggle-btn--open { color: #adb5bd; }
 
   .task-title { font-weight: 500; font-size: 0.95rem; }
-  .task-desc  { font-size: 0.82rem; color: #6c757d; margin: 0.25rem 0 0; }
+  .task-desc  { font-size: 0.82rem; color: #6c757d; margin: 0.2rem 0 0; }
   .task-due   { font-size: 0.8rem; margin: 0.2rem 0 0; }
 
-  /* Priority badges */
-  .priority-badge { font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 20px; letter-spacing: 0.03em; }
+  .priority-badge { font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 20px; }
   .priority-badge--high   { background: #fce4ec; color: #c62828; }
   .priority-badge--medium { background: #fff8e1; color: #f57f17; }
   .priority-badge--low    { background: #e8f5e9; color: #2e7d32; }
 
-  /* Empty state */
+  .cat-badge { font-size: 0.7rem; font-weight: 500; padding: 0.2rem 0.55rem; border-radius: 20px; }
+
   .empty-state { text-align: center; padding: 3rem 1rem; color: #6c757d; background: #fff; border: 1px dashed #dee2e6; border-radius: 8px; }
 
-  /* Sidebar */
   .sidebar-card { background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.25rem; }
-  .sidebar-card__title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6c757d; margin-bottom: 1rem; }
+  .sidebar-card__title { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6c757d; margin-bottom: 0.75rem; }
 
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
   .dot--high   { background: #dc3545; }
   .dot--medium { background: #ffc107; }
   .dot--low    { background: #198754; }
+
+  .cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .cat-filter-link {
+    display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
+    color: #495057; font-size: 0.875rem; padding: 0.35rem 0.5rem;
+    border-radius: 6px; transition: background 0.15s;
+  }
+  .cat-filter-link:hover { background: #f8f9fa; color: #212529; }
+  .cat-filter-link--active { background: #f0f0f0; font-weight: 600; color: #212529; }
 </style>
 
-<!-- ── CHART ───────────────────────────────────────────────────────────── -->
 {% if total %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-  const ctx = document.getElementById('progressChart');
-  new Chart(ctx, {
+  new Chart(document.getElementById('progressChart'), {
     type: 'doughnut',
     data: {
       labels: ['Completed', 'Pending'],
-      datasets: [{
-        data: [{{ completed }}, {{ pending }}],
-        backgroundColor: ['#198754', '#e9ecef'],
-        borderWidth: 0,
-        hoverOffset: 4,
-      }]
+      datasets: [{ data: [{{ completed }}, {{ pending }}], backgroundColor: ['#198754','#e9ecef'], borderWidth: 0, hoverOffset: 4 }]
     },
-    options: {
-      cutout: '72%',
-      plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 16 } }
-      }
-    }
+    options: { cutout: '72%', plugins: { legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 16 } } } }
   });
 </script>
 {% endif %}
