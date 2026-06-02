@@ -5,7 +5,6 @@ from .models import Task
 
 
 class RegisterForm(UserCreationForm):
-    """User registration form."""
     email = forms.EmailField(required=True)
 
     class Meta:
@@ -14,12 +13,13 @@ class RegisterForm(UserCreationForm):
 
 
 class TaskForm(forms.ModelForm):
-    """Form for creating and editing tasks."""
-
     class Meta:
         model = Task
-        fields = ['title', 'description', 'priority', 'due_date']
+        fields = ['title', 'description', 'priority', 'due_date', 'recurrence']
         widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'due_date':    forms.DateInput(attrs={'type': 'date'}),
             'description': forms.Textarea(attrs={'rows': 3}),
+        }
+        labels = {
+            'recurrence': 'Repeat',
         }

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
+from django.utils import timezone
 from .models import Task
 from .forms import TaskForm, RegisterForm
 
@@ -16,7 +17,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, f'Welcome, {user.username}! Your account was created.')
+            messages.success(request, f'Welcome, {user.username}!')
             return redirect('task-list')
     else:
         form = RegisterForm()
@@ -26,31 +27,60 @@ def register(request):
 
 @login_required
 def task_list(request):
-    """Show all tasks for the logged-in user, with optional filtering."""
-    filter_status = request.GET.get('status', 'all')
+    """Dashboard: task list with search, filter, and stats."""
+    today = timezone.now().date()
+
+    # --- filtering ---
+    status   = request.GET.get('status', 'all')
+    priority = request.GET.get('priority', 'all')
+    query    = request.GET.get('q', '').strip()
 
     tasks = Task.objects.filter(user=request.user)
 
-    if filter_status == 'active':
+    if status == 'active':
         tasks = tasks.filter(completed=False)
-    elif filter_status == 'completed':
+    elif status == 'completed':
         tasks = tasks.filter(completed=True)
+    elif status == 'overdue':
+        tasks = tasks.filter(completed=False, due_date__lt=today)
 
-    total     = Task.objects.filter(user=request.user).count()
-    completed = Task.objects.filter(user=request.user, completed=True).count()
+    if priority != 'all':
+        tasks = tasks.filter(priority=priority)
+
+    if query:
+        tasks = tasks.filter(title__icontains=query)
+
+    # --- stats (always from full set) ---
+    all_tasks = Task.objects.filter(user=request.user)
+    total     = all_tasks.count()
+    completed = all_tasks.filter(completed=True).count()
+    pending   = all_tasks.filter(completed=False).count()
+    overdue   = all_tasks.filter(completed=False, due_date__lt=today).count()
+
+    # annotate each task with overdue flag
+    for task in tasks:
+        task.is_overdue = (
+            not task.completed and
+            task.due_date is not None and
+            task.due_date < today
+        )
 
     context = {
         'tasks': tasks,
-        'filter_status': filter_status,
+        'status': status,
+        'priority': priority,
+        'query': query,
         'total': total,
         'completed': completed,
+        'pending': pending,
+        'overdue': overdue,
+        'today': today,
     }
     return render(request, 'tasks/task_list.html', context)
 
 
 @login_required
 def task_create(request):
-    """Create a new task."""
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -61,15 +91,12 @@ def task_create(request):
             return redirect('task-list')
     else:
         form = TaskForm()
-
     return render(request, 'tasks/task_form.html', {'form': form, 'action': 'Create'})
 
 
 @login_required
 def task_edit(request, pk):
-    """Edit an existing task."""
     task = get_object_or_404(Task, pk=pk, user=request.user)
-
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
@@ -78,27 +105,26 @@ def task_edit(request, pk):
             return redirect('task-list')
     else:
         form = TaskForm(instance=task)
-
     return render(request, 'tasks/task_form.html', {'form': form, 'action': 'Edit', 'task': task})
 
 
 @login_required
 def task_delete(request, pk):
-    """Delete a task after confirmation."""
     task = get_object_or_404(Task, pk=pk, user=request.user)
-
     if request.method == 'POST':
         task.delete()
         messages.success(request, 'Task deleted.')
         return redirect('task-list')
-
     return render(request, 'tasks/task_confirm_delete.html', {'task': task})
 
 
 @login_required
 def task_toggle(request, pk):
-    """Toggle a task's completed status."""
     task = get_object_or_404(Task, pk=pk, user=request.user)
     task.completed = not task.completed
     task.save()
+    # Auto-create next occurrence when a recurring task is completed
+    if task.completed and task.recurrence != 'none':
+        task.create_next_occurrence()
+        messages.success(request, f'✓ Done! Next "{task.title}" scheduled automatically.')
     return redirect('task-list')
