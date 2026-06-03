@@ -1,0 +1,109 @@
+{% extends 'tasks/base.html' %}
+{% block title %}{{ task.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a href="{% url 'task-list' %}" class="btn btn-sm btn-outline-secondary">← Back</a>
+      <div class="d-flex gap-2">
+        <a href="{% url 'task-toggle' task.pk %}" class="btn btn-sm {% if task.completed %}btn-outline-secondary{% else %}btn-success{% endif %}">
+          {% if task.completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
+        </a>
+        <a href="{% url 'task-edit' task.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <a href="{% url 'task-delete' task.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+
+        <!-- Title + status -->
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="flex-grow-1">
+            <h1 class="h3 mb-1 {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+              {{ task.title }}
+            </h1>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              <span class="priority-badge priority-badge--{{ task.priority }}">{{ task.get_priority_display }}</span>
+              {% if task.category %}
+                <span class="cat-badge" style="background:{{ task.category.color }}20; color:{{ task.category.color }}; border:1px solid {{ task.category.color }}40;">
+                  {{ task.category.name }}
+                </span>
+              {% endif %}
+              {% if task.completed %}
+                <span class="badge bg-success">Completed</span>
+              {% elif task.is_overdue %}
+                <span class="badge bg-danger">Overdue</span>
+              {% else %}
+                <span class="badge bg-secondary">Pending</span>
+              {% endif %}
+              {% if task.recurrence != 'none' %}
+                <span class="badge bg-secondary">🔁 {{ task.recurrence_label }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- Description -->
+        <div class="mb-4">
+          <p class="section-label">Description</p>
+          {% if task.description %}
+            <p class="task-description">{{ task.description }}</p>
+          {% else %}
+            <p class="text-muted fst-italic">No description added.</p>
+          {% endif %}
+        </div>
+
+        <!-- Meta info -->
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="meta-card">
+              <p class="meta-label">Due Date</p>
+              <p class="meta-value {% if task.is_overdue %}text-danger{% endif %}">
+                {{ task.due_date|default:"Not set" }}
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="meta-card">
+              <p class="meta-label">Repeat</p>
+              <p class="meta-value">{{ task.recurrence_label }}</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="meta-card">
+              <p class="meta-label">Created</p>
+              <p class="meta-value">{{ task.created_at|date:"M j, Y" }}</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="meta-card">
+              <p class="meta-label">Last Updated</p>
+              <p class="meta-value">{{ task.updated_at|date:"M j, Y" }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .priority-badge { font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 20px; }
+  .priority-badge--high   { background: #fce4ec; color: #c62828; }
+  .priority-badge--medium { background: #fff8e1; color: #f57f17; }
+  .priority-badge--low    { background: #e8f5e9; color: #2e7d32; }
+  .cat-badge { font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.65rem; border-radius: 20px; }
+  .section-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6c757d; margin-bottom: 0.5rem; }
+  .task-description { font-size: 0.975rem; line-height: 1.75; white-space: pre-wrap; }
+  .meta-card { background: #f8f9fa; border-radius: 8px; padding: 0.85rem 1rem; }
+  .meta-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #6c757d; margin-bottom: 0.25rem; }
+  .meta-value { font-size: 0.9rem; font-weight: 500; margin: 0; }
+</style>
+{% endblock %}

@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
+from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.utils import timezone
 from .models import Task, Category
-from .forms import TaskForm, RegisterForm, CategoryForm
+from .forms import TaskForm, RegisterForm, CategoryForm, ProfileForm
 
 
 def register(request):
@@ -144,6 +145,54 @@ def task_toggle(request, pk):
         task.create_next_occurrence()
         messages.success(request, f'✓ Done! Next "{task.title}" scheduled automatically.')
     return redirect('task-list')
+
+
+@login_required
+def task_detail(request, pk):
+    task = get_object_or_404(Task, pk=pk, user=request.user)
+    today = timezone.now().date()
+    task.is_overdue = (
+        not task.completed and
+        task.due_date is not None and
+        task.due_date < today
+    )
+    return render(request, 'tasks/task_detail.html', {'task': task})
+
+
+@login_required
+def profile(request):
+    user = request.user
+    all_tasks = Task.objects.filter(user=user)
+    stats = {
+        'total':     all_tasks.count(),
+        'completed': all_tasks.filter(completed=True).count(),
+        'pending':   all_tasks.filter(completed=False).count(),
+    }
+
+    profile_form  = ProfileForm(instance=user)
+    password_form = PasswordChangeForm(user)
+
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            profile_form = ProfileForm(request.POST, instance=user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile updated!')
+                return redirect('profile')
+
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(user, request.POST)
+            if password_form.is_valid():
+                updated_user = password_form.save()
+                update_session_auth_hash(request, updated_user)  # keep logged in
+                messages.success(request, 'Password changed!')
+                return redirect('profile')
+
+    return render(request, 'tasks/profile.html', {
+        'profile_form': profile_form,
+        'password_form': password_form,
+        'stats': stats,
+    })
 
 
 # ── Category views ────────────────────────────────────────────────────────────

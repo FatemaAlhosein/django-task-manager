@@ -82,9 +82,9 @@
             </div>
             <div class="task-card__body">
               <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="task-title {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+                <a href="{% url 'task-detail' task.pk %}" class="task-title {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
                   {{ task.title }}
-                </span>
+                </a>
                 <span class="priority-badge priority-badge--{{ task.priority }}">{{ task.get_priority_display }}</span>
                 {% if task.category %}
                   <span class="cat-badge" style="background:{{ task.category.color }}20; color:{{ task.category.color }}; border:1px solid {{ task.category.color }}40;">
@@ -240,7 +240,8 @@
   .toggle-btn--done { color: #198754; }
   .toggle-btn--open { color: #adb5bd; }
 
-  .task-title { font-weight: 500; font-size: 0.95rem; }
+  .task-title { font-weight: 500; font-size: 0.95rem; color: #212529; text-decoration: none; }
+  .task-title:hover { text-decoration: underline; color: #212529; }
   .task-desc  { font-size: 0.82rem; color: #6c757d; margin: 0.2rem 0 0; }
   .task-due   { font-size: 0.8rem; margin: 0.2rem 0 0; }
 

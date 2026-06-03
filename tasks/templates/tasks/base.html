@@ -20,7 +20,7 @@
     <a class="navbar-brand" href="{% url 'task-list' %}"><span>✓</span> TaskManager</a>
     <div class="d-flex align-items-center gap-3">
       {% if user.is_authenticated %}
-        <span class="text-secondary small d-none d-sm-inline">{{ user.username }}</span>
+        <a href="{% url 'profile' %}" class="text-secondary small d-none d-sm-inline text-decoration-none">{{ user.username }}</a>
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>

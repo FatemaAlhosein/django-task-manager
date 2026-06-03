@@ -8,6 +8,8 @@ urlpatterns = [
     path('<int:pk>/delete/',      views.task_delete,        name='task-delete'),
     path('<int:pk>/toggle/',      views.task_toggle,        name='task-toggle'),
     path('register/',             views.register,           name='register'),
+    path('<int:pk>/',             views.task_detail,        name='task-detail'),
+    path('profile/',              views.profile,            name='profile'),
     path('categories/',           views.category_list,      name='category-list'),
     path('categories/<int:pk>/delete/', views.category_delete, name='category-delete'),
 ]

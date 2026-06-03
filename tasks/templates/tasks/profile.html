@@ -1,0 +1,99 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h4 mb-0">My Profile</h1>
+      <a href="{% url 'task-list' %}" class="btn btn-sm btn-outline-secondary">← Dashboard</a>
+    </div>
+
+    <!-- Stats row -->
+    <div class="row g-3 mb-4">
+      <div class="col-4">
+        <div class="stat-mini">
+          <div class="stat-mini__number">{{ stats.total }}</div>
+          <div class="stat-mini__label">Total Tasks</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-mini stat-mini--success">
+          <div class="stat-mini__number">{{ stats.completed }}</div>
+          <div class="stat-mini__label">Completed</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-mini stat-mini--warning">
+          <div class="stat-mini__number">{{ stats.pending }}</div>
+          <div class="stat-mini__label">Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile info -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h6 mb-3 section-label">Account Info</h2>
+        <p class="mb-1"><strong>Username:</strong> {{ request.user.username }}</p>
+        <p class="mb-3 text-muted small">Username cannot be changed.</p>
+
+        <form method="post">
+          {% csrf_token %}
+          {% for field in profile_form %}
+            <div class="mb-3">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" name="update_profile" class="btn btn-dark">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Change password -->
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="h6 mb-3 section-label">Change Password</h2>
+        <form method="post">
+          {% csrf_token %}
+          {% for field in password_form %}
+            <div class="mb-3">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <p class="text-muted small mt-1">{{ field.help_text }}</p>
+              {% endif %}
+              {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" name="change_password" class="btn btn-dark">Change Password</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  input[type=text], input[type=email], input[type=password] {
+    display: block; width: 100%; padding: .5rem .75rem;
+    border: 1px solid #dee2e6; border-radius: .375rem; font-size: .95rem;
+  }
+  input:focus { outline: none; border-color: #212529; box-shadow: 0 0 0 3px rgba(33,37,41,.1); }
+
+  .section-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6c757d; }
+
+  .stat-mini { background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 1rem; text-align: center; }
+  .stat-mini--success { border-top: 3px solid #198754; }
+  .stat-mini--warning { border-top: 3px solid #ffc107; }
+  .stat-mini__number  { font-size: 1.75rem; font-weight: 700; line-height: 1; }
+  .stat-mini__label   { font-size: 0.72rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+</style>
+{% endblock %}
