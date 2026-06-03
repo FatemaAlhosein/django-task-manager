@@ -80,3 +80,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'task-list'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+
+# HTTPS / proxy settings for Render
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
