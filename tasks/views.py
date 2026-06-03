@@ -8,6 +8,18 @@ from .models import Task, Category
 from .forms import TaskForm, RegisterForm, CategoryForm, ProfileForm
 
 
+def demo_login(request):
+    from django.contrib.auth import authenticate
+    if request.method == 'POST':
+        user = authenticate(request, username='demo', password='Demo1234!')
+        if user:
+            login(request, user)
+            messages.success(request, 'You are viewing the demo account.')
+        else:
+            messages.error(request, 'Demo account not available.')
+    return redirect('task-list')
+
+
 def register(request):
     if request.user.is_authenticated:
         return redirect('task-list')

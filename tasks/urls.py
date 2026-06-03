@@ -4,6 +4,7 @@ from . import api_views
 
 urlpatterns = [
     # ── HTML views ────────────────────────────────────────────────────────────
+    path('demo-login/',           views.demo_login,         name='demo-login'),
     path('',                      views.task_list,          name='task-list'),
     path('create/',               views.task_create,        name='task-create'),
     path('<int:pk>/edit/',        views.task_edit,          name='task-edit'),
