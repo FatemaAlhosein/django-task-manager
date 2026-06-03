@@ -95,7 +95,7 @@
                   <span class="badge bg-danger">Overdue</span>
                 {% endif %}
                 {% if task.recurrence != 'none' %}
-                  <span class="badge bg-secondary">🔁 {{ task.get_recurrence_display }}</span>
+                  <span class="badge bg-secondary">🔁 {{ task.recurrence_label }}</span>
                 {% endif %}
               </div>
               {% if task.description %}

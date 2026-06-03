@@ -21,13 +21,14 @@ class CategoryForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'category', 'priority', 'due_date', 'recurrence']
+        fields = ['title', 'description', 'category', 'priority', 'due_date', 'recurrence', 'recurrence_weekday']
         widgets = {
             'due_date':    forms.DateInput(attrs={'type': 'date'}),
             'description': forms.Textarea(attrs={'rows': 3}),
         }
         labels = {
-            'recurrence': 'Repeat',
+            'recurrence':         'Repeat',
+            'recurrence_weekday': 'On which day?',
         }
 
     def __init__(self, user=None, *args, **kwargs):
@@ -36,3 +37,4 @@ class TaskForm(forms.ModelForm):
             self.fields['category'].queryset = Category.objects.filter(user=user)
         self.fields['category'].empty_label = 'No category'
         self.fields['category'].required = False
+        self.fields['recurrence_weekday'].required = False

@@ -9,15 +9,24 @@
         <h2 class="h4 mb-4">{{ action }} Task</h2>
         <form method="post">
           {% csrf_token %}
+
           {% for field in form %}
-            <div class="mb-3">
+            <div class="mb-3 {% if field.name == 'recurrence_weekday' %}weekday-row{% endif %}"
+                 {% if field.name == 'recurrence_weekday' %}style="display:none;"{% endif %}>
               <label for="{{ field.id_for_label }}" class="form-label fw-500">{{ field.label }}</label>
               {{ field }}
+              {% if field.name == 'due_date' %}
+                <p class="text-muted small mt-1">📅 For recurring tasks, set this to <strong>today</strong> — it's the start date, not the end date. The app rolls it forward automatically each time you complete the task.</p>
+              {% endif %}
+              {% if field.name == 'recurrence' %}
+                <p class="text-muted small mt-1">🔁 When you complete a recurring task, the next one is created automatically with the updated due date.</p>
+              {% endif %}
               {% if field.errors %}
                 <div class="text-danger small mt-1">{{ field.errors }}</div>
               {% endif %}
             </div>
           {% endfor %}
+
           <div class="d-flex gap-2 mt-4">
             <button type="submit" class="btn btn-dark">{{ action }} Task</button>
             <a href="{% url 'task-list' %}" class="btn btn-outline-secondary">Cancel</a>
@@ -38,4 +47,17 @@
     outline: none; border-color: #212529; box-shadow: 0 0 0 3px rgba(33,37,41,.1);
   }
 </style>
+
+<script>
+  const recurrenceSelect = document.getElementById('id_recurrence');
+  const weekdayRow = document.querySelector('.weekday-row');
+
+  function toggleWeekday() {
+    weekdayRow.style.display = recurrenceSelect.value === 'weekday_on' ? 'block' : 'none';
+  }
+
+  recurrenceSelect.addEventListener('change', toggleWeekday);
+  toggleWeekday(); // run on page load (for edit forms)
+</script>
+
 {% endblock %}
