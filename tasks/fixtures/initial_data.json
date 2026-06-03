@@ -1,0 +1,515 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$B2VfRhNbgWjpNNGCvfLK9y$L1Sxr6A+mgvXNW66x6vyw1j8aS0QOW5tB8I8Gztm3YM=",
+    "last_login": "2026-06-03T16:46:51.544Z",
+    "is_superuser": false,
+    "username": "admin",
+    "first_name": "Fatema",
+    "last_name": "Alhosein",
+    "email": "fatema.alhosein@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-02T20:54:22.117Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "tasks.category",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "name": "Work",
+    "color": "#4f86c6"
+  }
+},
+{
+  "model": "tasks.category",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "name": "Home",
+    "color": "#e06c75"
+  }
+},
+{
+  "model": "tasks.category",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "name": "Personal",
+    "color": "#e5c07b"
+  }
+},
+{
+  "model": "tasks.category",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "name": "Family",
+    "color": "#98c379"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "category": 4,
+    "title": "pick up the kids from school",
+    "description": "pick up the kids from school",
+    "priority": "high",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "weekday",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T20:57:28.588Z",
+    "updated_at": "2026-06-03T00:23:16.560Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "cook dinner",
+    "description": "make dinner every day for family to be ready at 6:00 pm",
+    "priority": "high",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:02:40.219Z",
+    "updated_at": "2026-06-03T00:22:34.874Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Prepare breakfast for kids",
+    "description": "Make simple breakfast before school",
+    "priority": "high",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-02T23:25:57.801Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Clean kitchen",
+    "description": "Wash dishes and wipe surfaces",
+    "priority": "medium",
+    "completed": true,
+    "due_date": "2026-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-03T16:37:55.857Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Laundry",
+    "description": "Wash and fold clothes",
+    "priority": "medium",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "weekly",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-02T23:25:43.616Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Grocery shopping",
+    "description": "Buy food and household items",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-04",
+    "recurrence": "weekly",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-02T23:17:25.814Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "Clean bathroom",
+    "description": "Deep clean bathroom 1,2",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "weekly",
+    "recurrence_weekday": 4,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-03T16:43:54.541Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "category": 4,
+    "title": "Help kids with homework",
+    "description": "Check school work and assignments",
+    "priority": "high",
+    "completed": true,
+    "due_date": "2027-06-02",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-03T00:29:27.103Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Pay bills",
+    "description": "Electricity, internet, rent",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-07",
+    "recurrence": "monthly",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-02T23:17:25.814Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 12,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Organize kids clothes",
+    "description": "Sort old and new clothes",
+    "priority": "low",
+    "completed": false,
+    "due_date": "2026-06-12",
+    "recurrence": "none",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:25.814Z",
+    "updated_at": "2026-06-02T23:17:25.814Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Clean kitchen",
+    "description": "Wash dishes and wipe surfaces",
+    "priority": "medium",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:29.239Z",
+    "updated_at": "2026-06-02T23:25:45.506Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 21,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Doctor appointment for child",
+    "description": "Regular check-up",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "none",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:29.239Z",
+    "updated_at": "2026-06-03T00:22:48.822Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 24,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "Clean kitchen",
+    "description": "Wash dishes and wipe surfaces",
+    "priority": "medium",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:37.164Z",
+    "updated_at": "2026-06-03T16:39:16.795Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 25,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "Laundry",
+    "description": "Wash and fold clothes",
+    "priority": "medium",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:37.164Z",
+    "updated_at": "2026-06-03T00:15:01.146Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 30,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Pay bills",
+    "description": "Electricity, internet, rent",
+    "priority": "high",
+    "completed": true,
+    "due_date": "2026-06-02",
+    "recurrence": "monthly",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:17:37.164Z",
+    "updated_at": "2026-06-03T00:14:36.928Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 37,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Prepare breakfast for kids",
+    "description": "Make simple breakfast before school",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-02T23:25:57.804Z",
+    "updated_at": "2026-06-02T23:25:57.804Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 39,
+  "fields": {
+    "user": 1,
+    "category": null,
+    "title": "Pay bills",
+    "description": "Electricity, internet, rent",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-07-02",
+    "recurrence": "monthly",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T00:14:36.932Z",
+    "updated_at": "2026-06-03T00:14:36.932Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 40,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "Laundry",
+    "description": "Wash and fold clothes",
+    "priority": "medium",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "weekday_on",
+    "recurrence_weekday": 4,
+    "created_at": "2026-06-03T00:15:01.150Z",
+    "updated_at": "2026-06-03T00:22:06.274Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 41,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "cook dinner",
+    "description": "make dinner every day for family to be ready at 6:00 pm",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T00:22:34.878Z",
+    "updated_at": "2026-06-03T00:22:34.878Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 42,
+  "fields": {
+    "user": 1,
+    "category": 4,
+    "title": "pick up the kids from school",
+    "description": "pick up the kids from school",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "weekday",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T00:23:16.564Z",
+    "updated_at": "2026-06-03T00:23:16.564Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 43,
+  "fields": {
+    "user": 1,
+    "category": 4,
+    "title": "Help kids with homework",
+    "description": "Check school work and assignments",
+    "priority": "high",
+    "completed": false,
+    "due_date": "2027-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T00:29:27.108Z",
+    "updated_at": "2026-06-03T00:29:27.108Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 44,
+  "fields": {
+    "user": 1,
+    "category": 3,
+    "title": "Practice React (Frontend)",
+    "description": "Build small components and practice hooks",
+    "priority": "medium",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T16:36:44.426Z",
+    "updated_at": "2026-06-03T16:36:44.426Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 45,
+  "fields": {
+    "user": 1,
+    "category": 3,
+    "title": "Work on portfolio project",
+    "description": "Improve task manager app or add new features",
+    "priority": "medium",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "weekly",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T16:39:09.012Z",
+    "updated_at": "2026-06-03T16:39:55.325Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 46,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "Clean kitchen",
+    "description": "Wash dishes and wipe surfaces",
+    "priority": "medium",
+    "completed": true,
+    "due_date": "2026-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T16:39:16.803Z",
+    "updated_at": "2026-06-03T16:39:23.779Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 47,
+  "fields": {
+    "user": 1,
+    "category": 2,
+    "title": "Clean kitchen",
+    "description": "Wash dishes and wipe surfaces",
+    "priority": "medium",
+    "completed": false,
+    "due_date": "2026-06-04",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T16:39:23.783Z",
+    "updated_at": "2026-06-03T16:39:23.783Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 48,
+  "fields": {
+    "user": 1,
+    "category": 3,
+    "title": "Watch coding tutorial",
+    "description": "Follow a YouTube or course lesson",
+    "priority": "medium",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "weekday",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T16:40:23.993Z",
+    "updated_at": "2026-06-03T16:40:23.993Z"
+  }
+},
+{
+  "model": "tasks.task",
+  "pk": 49,
+  "fields": {
+    "user": 1,
+    "category": 3,
+    "title": "Read documentation",
+    "description": "Read Django or React official docs",
+    "priority": "medium",
+    "completed": false,
+    "due_date": "2026-06-03",
+    "recurrence": "daily",
+    "recurrence_weekday": null,
+    "created_at": "2026-06-03T16:41:17.824Z",
+    "updated_at": "2026-06-03T16:41:17.824Z"
+  }
+}
+]
