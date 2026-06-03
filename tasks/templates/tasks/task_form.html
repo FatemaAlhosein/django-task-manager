@@ -30,6 +30,9 @@
           <div class="d-flex gap-2 mt-4">
             <button type="submit" class="btn btn-dark">{{ action }} Task</button>
             <a href="{% url 'task-list' %}" class="btn btn-outline-secondary">Cancel</a>
+            {% if task %}
+              <a href="{% url 'task-delete' task.pk %}" class="btn btn-outline-danger ms-auto">Delete Task</a>
+            {% endif %}
           </div>
         </form>
       </div>

@@ -49,3 +49,5 @@ class TaskForm(forms.ModelForm):
         self.fields['category'].empty_label = 'No category'
         self.fields['category'].required = False
         self.fields['recurrence_weekday'].required = False
+        self.fields['priority'].required = True
+        self.fields['due_date'].required = True

@@ -59,21 +59,43 @@
     <div class="card shadow-sm">
       <div class="card-body p-4">
         <h2 class="h6 mb-3 section-label">Change Password</h2>
-        <form method="post">
+        <form method="post" id="passwordForm">
           {% csrf_token %}
-          {% for field in password_form %}
-            <div class="mb-3">
-              <label class="form-label">{{ field.label }}</label>
-              {{ field }}
-              {% if field.help_text %}
-                <p class="text-muted small mt-1">{{ field.help_text }}</p>
-              {% endif %}
-              {% if field.errors %}
-                <div class="text-danger small mt-1">{{ field.errors }}</div>
-              {% endif %}
-            </div>
-          {% endfor %}
-          <button type="submit" name="change_password" class="btn btn-dark">Change Password</button>
+
+          <!-- Old password -->
+          <div class="mb-3">
+            <label class="form-label">{{ password_form.old_password.label }}</label>
+            {{ password_form.old_password }}
+            {% if password_form.old_password.errors %}
+              <div class="text-danger small mt-1">{{ password_form.old_password.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- New password 1 -->
+          <div class="mb-3">
+            <label class="form-label">{{ password_form.new_password1.label }}</label>
+            {{ password_form.new_password1 }}
+            <ul class="pw-rules small mt-2 ps-3 mb-0">
+              <li id="rule-len">At least 8 characters</li>
+              <li id="rule-num">Contains a number</li>
+              <li id="rule-alpha">Not entirely numeric</li>
+            </ul>
+            {% if password_form.new_password1.errors %}
+              <div class="text-danger small mt-1">{{ password_form.new_password1.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- New password 2 -->
+          <div class="mb-3">
+            <label class="form-label">{{ password_form.new_password2.label }}</label>
+            {{ password_form.new_password2 }}
+            <p id="pw-match" class="small mt-1 mb-0"></p>
+            {% if password_form.new_password2.errors %}
+              <div class="text-danger small mt-1">{{ password_form.new_password2.errors }}</div>
+            {% endif %}
+          </div>
+
+          <button type="submit" name="change_password" class="btn btn-dark" id="pwSubmitBtn">Change Password</button>
         </form>
       </div>
     </div>
@@ -95,5 +117,50 @@
   .stat-mini--warning { border-top: 3px solid #ffc107; }
   .stat-mini__number  { font-size: 1.75rem; font-weight: 700; line-height: 1; }
   .stat-mini__label   { font-size: 0.72rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+  .pw-rules { list-style: none; padding-left: 0; }
+  .pw-rules li { color: #6c757d; padding: 0.1rem 0; }
+  .pw-rules li::before { content: '○  '; font-size: 0.7rem; }
+  .pw-rules li.rule-ok { color: #198754; }
+  .pw-rules li.rule-ok::before { content: '✓  '; }
+  .pw-rules li.rule-fail { color: #dc3545; }
+  .pw-rules li.rule-fail::before { content: '✕  '; }
 </style>
+
+<script>
+(function () {
+  const pw1 = document.getElementById('id_new_password1');
+  const pw2 = document.getElementById('id_new_password2');
+  const matchMsg = document.getElementById('pw-match');
+  const ruleLen   = document.getElementById('rule-len');
+  const ruleNum   = document.getElementById('rule-num');
+  const ruleAlpha = document.getElementById('rule-alpha');
+
+  function setRule(el, pass) {
+    el.classList.toggle('rule-ok',   pass);
+    el.classList.toggle('rule-fail', pw1.value.length > 0 && !pass);
+  }
+
+  function checkRules() {
+    const v = pw1.value;
+    setRule(ruleLen,   v.length >= 8);
+    setRule(ruleNum,   /\d/.test(v));
+    setRule(ruleAlpha, !/^\d+$/.test(v));
+  }
+
+  function checkMatch() {
+    if (!pw2.value) { matchMsg.textContent = ''; return; }
+    if (pw1.value === pw2.value) {
+      matchMsg.textContent = '✓ Passwords match';
+      matchMsg.style.color = '#198754';
+    } else {
+      matchMsg.textContent = '✕ Passwords do not match';
+      matchMsg.style.color = '#dc3545';
+    }
+  }
+
+  if (pw1) pw1.addEventListener('input', () => { checkRules(); checkMatch(); });
+  if (pw2) pw2.addEventListener('input', checkMatch);
+})();
+</script>
 {% endblock %}
