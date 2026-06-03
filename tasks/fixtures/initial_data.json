@@ -1,23 +1,5 @@
 [
 {
-  "model": "auth.user",
-  "pk": 1,
-  "fields": {
-    "password": "pbkdf2_sha256$600000$B2VfRhNbgWjpNNGCvfLK9y$L1Sxr6A+mgvXNW66x6vyw1j8aS0QOW5tB8I8Gztm3YM=",
-    "last_login": "2026-06-03T16:46:51.544Z",
-    "is_superuser": false,
-    "username": "admin",
-    "first_name": "Fatema",
-    "last_name": "Alhosein",
-    "email": "fatema.alhosein@gmail.com",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2026-06-02T20:54:22.117Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
   "model": "tasks.category",
   "pk": 1,
   "fields": {
