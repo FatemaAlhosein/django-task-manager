@@ -2,7 +2,7 @@
 
 A full-stack task management web app built with Python and Django.
 
-**Live demo:** *(add link after deploying to Railway or Render)*
+**Live demo:** *(https://django-task-manager-5l3y.onrender.com/)*
 
 ![Task Manager Screenshot](screenshot.png)
 
